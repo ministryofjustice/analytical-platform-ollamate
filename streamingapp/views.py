@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from azure_auth.decorators import azure_auth_required
+from django.shortcuts import HttpResponse
 import requests
 import logging
 import json
@@ -7,6 +9,7 @@ import json
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
+@azure_auth_required
 def call_ollama(request):
     if request.method == 'POST':
         user_input = request.POST.get('userInput', '')
