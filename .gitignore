@@ -8,3 +8,12 @@ env/
 *.code-workspace
 *.sha256
 terraform.tfstate
+super-linter.log
+.mypy_cache/
+.idea/
+__pycache__
+*.egg-info/
+node_modules/
+/static/
+/run/
+db.sqlite3
