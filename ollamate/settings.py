@@ -33,7 +33,6 @@ else:
     print("TENANT_ID:", env("AZURE_TENANT_ID"))
     print("REDIRECT_URI:", env("REDIRECT_URI"))
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -60,7 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'streamingapp',
     'azure_auth'
- ]
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -169,3 +168,4 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = '/'
 
 AUTHENTICATION_BACKENDS = ("azure_auth.backends.AzureBackend",)
+
