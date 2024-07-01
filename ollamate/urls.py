@@ -16,8 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from streamingapp.views import redirect_to_ollama
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('stream/', include('streamingapp.urls'))
+    path("azure_auth/", include("azure_auth.urls"),),
+    path('stream/', include('streamingapp.urls')),
+    path('', redirect_to_ollama)
 ]

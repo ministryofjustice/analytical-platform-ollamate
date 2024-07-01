@@ -12,9 +12,29 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+import os
+import environ
+
+# Initialize environment variables
+env = environ.Env()
+
+# Set the project base directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Read the .env file
+env_file = os.path.join(BASE_DIR, '.env')
+if os.path.isfile(env_file):
+    print(f"Loading environment variables from {env_file}")
+    environ.Env.read_env(env_file)
+else:
+    print(f"{env_file} not found")
+    print("CLIENT_ID:", env("CLIENT_ID"))
+    print("CLIENT_SECRET:", env("CLIENT_SECRET"))
+    print("TENANT_ID:", env("AZURE_TENANT_ID"))
+    print("REDIRECT_URI:", env("REDIRECT_URI"))
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -37,7 +57,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'streamingapp'
+    'streamingapp',
+    'azure_auth'
 ]
 
 MIDDLEWARE = [
@@ -122,3 +143,29 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Azure authentication settings
+
+AZURE_AUTH = {
+    "CLIENT_ID": env("CLIENT_ID"),
+    "CLIENT_SECRET": env("CLIENT_SECRET"),
+    "REDIRECT_URI": env("REDIRECT_URI"),
+    "SCOPES": ["User.Read"],
+    "AUTHORITY": "https://login.microsoftonline.com/{}".format(env("AZURE_TENANT_ID")),   # Or https://login.microsoftonline.com/common if multi-tenant
+#     # "LOGOUT_URI": "https://<domain>/logout",    # Optional
+#     # "PUBLIC_URLS": ["<public:view_name>",],  # Optional, public views accessible by non-authenticated users
+#     # "PUBLIC_PATHS": ['/go/',],  # Optional, public paths accessible by non-authenticated users
+#     # "ROLES": {
+#     #     "95170e67-2bbf-4e3e-a4d7-e7e5829fe7a7": "GroupName1",
+#     #     "3dc6539e-0589-4663-b782-fef100d839aa": "GroupName2"
+#     # },  # Optional, will add user to django group if user is in EntraID group
+    "USERNAME_ATTRIBUTE": "mail",   # The AAD attribute or ID token claim you want to use as the value for the user model `USERNAME_FIELD`
+#     # "EXTRA_FIELDS": [], # Optional, extra AAD user profile attributes you want to make available in the user mapping function
+#     "USER_MAPPING_FN": "azure_auth.tests.misc.user_mapping_fn", # Optional, path to the function used to map the AAD to Django attributes
+}
+LOGIN_URL = "/azure_auth/login"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = '/'
+
+AUTHENTICATION_BACKENDS = ("azure_auth.backends.AzureBackend",)
+
