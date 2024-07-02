@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ollamate 🦙🍵</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            flex: 1;
+        }
+        .ollama-response {
+            white-space: pre-wrap; /* Ensures that whitespace and line breaks are preserved */
+            word-wrap: break-word; /* Allows breaking long words to wrap properly */
+        }
+        pre {
+            position: relative;
+        }
+        .code-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #333;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 12px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            box-sizing: border-box; /* Ensure padding does not overflow the box */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <div class="w-full bg-yellow-400 text-center p-2">
+        <p class="text-black font-bold">A Proof of Concept by the <a href="https://github.com/ministryofjustice/analytical-platform" class="text-blue-700 hover:underline">Analytical Platform</a></p>
+    </div>
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-4 text-center">Ollamate 🦙🍵</h1>
+        <h2 class="text-xl font-bold mb-4 text-center">A Simple Conversational AI.</h2>
+        <p class="mb-4 text-center">Logged in as: <strong>{{ user.username }}</strong></p>
+        <div class="mt-4 text-center">
+            {% if user.is_authenticated %}
+                <a href="{% url 'azure_auth:logout' %}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Logout</a>
+            {% else %}
+                <a href="{% url 'azure_auth:login' %}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Login</a>
+            {% endif %}
+        </div>
+        <p class="mb-4">Enter text below to interact with Ollamate:</p>
+        <div id="conversation-log" class="bg-white p-4 rounded shadow-lg hidden text-base"></div>
+        <form id="ollamaForm" class="mt-4">
+            <div class="flex items-center">
+                <textarea id="userInput" name="userInput" required class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none"></textarea>
+                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded ml-2">Send</button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-4 mt-8">
+        <div class="container mx-auto text-center">
+            <p>📝 <a href="https://github.com/ministryofjustice/analytical-platform-ollamate" class="text-blue-500 hover:underline">GitHub Repository</a></p>
+        </div>
+    </footer>
+
+    <script>
+        $(document).ready(function() {
+            var conversationHistory = [];
+
+            $('#userInput').on('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+
+            $('#ollamaForm').on('submit', function(event) {
+                event.preventDefault();
+                var userInput = $('#userInput').val();
+                $('#userInput').val('');
+                $('#userInput').css('height', 'auto');
+
+                conversationHistory.push({"role": "user", "content": userInput});
+
+                $('#conversation-log').removeClass('hidden');
+                $('#conversation-log').append('<div class="conversation mb-4"><span class="user-query block text-blue-700 ollama-response"><strong>User:</strong> ' + userInput + '</span></div>');
+                scrollToBottom();
+
+                $.ajax({
+                    url: "{% url 'call_ollama' %}",
+                    type: "POST",
+                    data: {
+                        userInput: JSON.stringify(conversationHistory),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        var ollamaResponse = response.response;
+
+                        var formattedResponse = formatResponse(ollamaResponse);
+                        
+                        conversationHistory.push({"role": "assistant", "content": formattedResponse});
+
+                        $('#conversation-log').append('<div class="conversation mb-4"><span class="ollama-response block text-green-700"><strong>Ollama:</strong> ' + formattedResponse + '</span></div>');
+                        scrollToBottom();
+
+                        $('pre code').each(function(i, block) {
+                            hljs.highlightElement(block);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        $('#conversation-log').append('<div class="conversation mb-4"><span class="ollama-response block text-red-700"><strong>Error:</strong> ' + xhr.responseText + '</span></div>');
+                        scrollToBottom();
+                    }
+                });
+            });
+
+            function formatResponse(response) {
+                return response.replace(/```(\w+)?\n([\s\S]*?)```/g, function(match, p1, p2) {
+                    var langClass = p1 ? 'language-' + p1 : '';
+                    var langLabel = p1 ? p1.toUpperCase() : 'CODE';
+                    return '<pre class="rounded overflow-hidden border"><div class="code-label">' + langLabel + '</div><code class="' + langClass + ' p-4">' + p2 + '</code></pre>';
+                });
+            }
+
+            function scrollToBottom() {
+                const offset = 100;
+                window.scrollTo({ top: document.body.scrollHeight + offset, behavior: 'smooth' });
+            }
+        });
+    </script>
+</body>
+</html>
