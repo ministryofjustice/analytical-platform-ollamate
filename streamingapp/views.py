@@ -1,7 +1,6 @@
 import json
 import logging
 
-
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 

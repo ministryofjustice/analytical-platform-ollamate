@@ -14,7 +14,6 @@ from pathlib import Path
 
 import environ
 
-
 # Initialize environment variables
 env = environ.Env()
 
@@ -34,7 +33,7 @@ else:
     print("REDIRECT_URI:", env("REDIRECT_URI"))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
