@@ -22,7 +22,7 @@ env = environ.Env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Read the .env file
-env_file = os.path.join(BASE_DIR, '.env')
+env_file = os.path.join(BASE_DIR, ".env")
 if os.path.isfile(env_file):
     print(f"Loading environment variables from {env_file}")
     environ.Env.read_env(env_file)
@@ -40,7 +40,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(y%c-1p0lnlrxg!$3w)ptcyp=wzer(biav_-%_fehgn1oatx8p'
+SECRET_KEY = "django-insecure-(y%c-1p0lnlrxg!$3w)ptcyp=wzer(biav_-%_fehgn1oatx8p"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -52,45 +52,45 @@ PROJECT_NAME = "ollamate"
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'streamingapp',
-    'azure_auth'
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "streamingapp",
+    "azure_auth",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'ollamate.urls'
+ROOT_URLCONF = "ollamate.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'ollamate.wsgi.application'
+WSGI_APPLICATION = "ollamate.wsgi.application"
 
 
 # Database
@@ -98,7 +98,9 @@ WSGI_APPLICATION = 'ollamate.wsgi.application'
 
 DB_HOST = os.environ.get("DB_HOST", "127.0.0.1")
 ENABLE_DB_SSL = (
-    str(os.environ.get("ENABLE_DB_SSL", DB_HOST not in ["127.0.0.1", "localhost"])).lower()
+    str(
+        os.environ.get("ENABLE_DB_SSL", DB_HOST not in ["127.0.0.1", "localhost"])
+    ).lower()
     == "true"
 )
 DATABASES: dict = {
@@ -121,16 +123,16 @@ if ENABLE_DB_SSL:
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -138,9 +140,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -150,12 +152,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Azure authentication settings
 
@@ -164,21 +166,22 @@ AZURE_AUTH = {
     "CLIENT_SECRET": env("CLIENT_SECRET"),
     "REDIRECT_URI": env("REDIRECT_URI"),
     "SCOPES": ["User.Read"],
-    "AUTHORITY": "https://login.microsoftonline.com/{}".format(env("AZURE_TENANT_ID")),   # Or https://login.microsoftonline.com/common if multi-tenant
-#     # "LOGOUT_URI": "https://<domain>/logout",    # Optional
-#     # "PUBLIC_URLS": ["<public:view_name>",],  # Optional, public views accessible by non-authenticated users
-#     # "PUBLIC_PATHS": ['/go/',],  # Optional, public paths accessible by non-authenticated users
-#     # "ROLES": {
-#     #     "95170e67-2bbf-4e3e-a4d7-e7e5829fe7a7": "GroupName1",
-#     #     "3dc6539e-0589-4663-b782-fef100d839aa": "GroupName2"
-#     # },  # Optional, will add user to django group if user is in EntraID group
-    "USERNAME_ATTRIBUTE": "mail",   # The AAD attribute or ID token claim you want to use as the value for the user model `USERNAME_FIELD`
-#     # "EXTRA_FIELDS": [], # Optional, extra AAD user profile attributes you want to make available in the user mapping function
-#     "USER_MAPPING_FN": "azure_auth.tests.misc.user_mapping_fn", # Optional, path to the function used to map the AAD to Django attributes
+    "AUTHORITY": "https://login.microsoftonline.com/{}".format(
+        env("AZURE_TENANT_ID")
+    ),  # Or https://login.microsoftonline.com/common if multi-tenant
+    #     # "LOGOUT_URI": "https://<domain>/logout",    # Optional
+    #     # "PUBLIC_URLS": ["<public:view_name>",],  # Optional, public views accessible by non-authenticated users
+    #     # "PUBLIC_PATHS": ['/go/',],  # Optional, public paths accessible by non-authenticated users
+    #     # "ROLES": {
+    #     #     "95170e67-2bbf-4e3e-a4d7-e7e5829fe7a7": "GroupName1",
+    #     #     "3dc6539e-0589-4663-b782-fef100d839aa": "GroupName2"
+    #     # },  # Optional, will add user to django group if user is in EntraID group
+    "USERNAME_ATTRIBUTE": "mail",  # The AAD attribute or ID token claim you want to use as the value for the user model `USERNAME_FIELD`
+    #     # "EXTRA_FIELDS": [], # Optional, extra AAD user profile attributes you want to make available in the user mapping function
+    #     "USER_MAPPING_FN": "azure_auth.tests.misc.user_mapping_fn", # Optional, path to the function used to map the AAD to Django attributes
 }
 LOGIN_URL = "/azure_auth/login"
 LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = "/"
 
 AUTHENTICATION_BACKENDS = ("azure_auth.backends.AzureBackend",)
-
