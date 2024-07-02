@@ -1,0 +1,49 @@
+---
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  pullPolicy: IfNotPresent
+  repository: ghcr.io/ministryofjustice/analytical-platform-ollamate
+  tag: 0.0.1
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  automount: true
+  name: ""
+  annotations: {}
+
+podAnnotations: {}
+podLabels: {}
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 10000
+
+resources:
+  requests:
+    cpu: 1
+    memory: "5Gi"
+  limits:
+    cpu: 2
+    memory: "7Gi"
+
+github:
+  organisation:
+  repository:
+  token:
+  runner:
+    labels:
+
+ephemeral:
+  enabled: false
+  karpenter:
+    enabled: false
+    nodePool: "general-on-demand"
+  keda:
+    maxReplicaCount: 5
+    pollingInterval: 30
