@@ -1,12 +1,12 @@
-import logging
 import json
+import logging
+
 
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 
 import requests
 from azure_auth.decorators import azure_auth_required
-
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
