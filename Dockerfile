@@ -28,7 +28,7 @@ RUN mkdir --parents static/assets/fonts \
 COPY scripts/container/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY requirements.txt manage.py ./
 COPY ollamate ollamate
-COPY tests tests
+# COPY tests tests
 
 RUN pip install --no-cache-dir --requirement requirements.txt \
     && chmod +x /usr/local/bin/entrypoint.sh \
