@@ -4,4 +4,4 @@ extend-ignore = E203, E704
 exclude =
     venv
 per-file-ignores =
-  ollamate/*/migrations/*:E501,W292
+  ollamate/*:E501,W292
