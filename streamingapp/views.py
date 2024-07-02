@@ -34,9 +34,7 @@ def call_ollama(request):
             ollama_response = response_data.get("message", {}).get("content", "")
             if not ollama_response:
                 logging.error("Empty response from Ollama API")
-                return JsonResponse(
-                    {"error": "Empty response from Ollama API"}, status=500
-                )
+                return JsonResponse({"error": "Empty response from Ollama API"}, status=500)
 
             return JsonResponse({"response": ollama_response})
         except requests.RequestException as e:

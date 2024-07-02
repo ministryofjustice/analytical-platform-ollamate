@@ -9,11 +9,10 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
-from pathlib import Path
-
 import os
 import environ
+from pathlib import Path
+
 
 # Initialize environment variables
 env = environ.Env()
@@ -98,9 +97,7 @@ WSGI_APPLICATION = "ollamate.wsgi.application"
 
 DB_HOST = os.environ.get("DB_HOST", "127.0.0.1")
 ENABLE_DB_SSL = (
-    str(
-        os.environ.get("ENABLE_DB_SSL", DB_HOST not in ["127.0.0.1", "localhost"])
-    ).lower()
+    str(os.environ.get("ENABLE_DB_SSL", DB_HOST not in ["127.0.0.1", "localhost"])).lower()
     == "true"
 )
 DATABASES: dict = {
