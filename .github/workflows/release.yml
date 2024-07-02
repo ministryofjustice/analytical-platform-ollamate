@@ -1,0 +1,54 @@
+---
+name: Release
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+permissions: {}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Install cosign
+        id: install-cosign
+        uses: sigstore/cosign-installer@1fc5bd396d372bee37d608f955b336615edf79c8 # v3.2.0
+
+      - name: Login to GitHub Container Registry
+        id: login
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push
+        id: push
+        uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56 # v5.1.0
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/analytical-platform-ui:${{ github.ref_name }}
+
+      - name: Sign
+        id: sign
+        run: |
+          cosign sign --yes ghcr.io/${{ github.repository_owner }}/analytical-platform-ui@${{ steps.push.outputs.digest }}
+
+      - name: Verify
+        id: verify
+        run: |
+          cosign verify \
+          --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+          --certificate-identity=https://github.com/${{ github.repository_owner }}/analytical-platform-ui/.github/workflows/release.yml@refs/tags/${{ github.ref_name }} \
+          ghcr.io/${{ github.repository_owner }}/analytical-platform-ui@${{ steps.push.outputs.digest }}
