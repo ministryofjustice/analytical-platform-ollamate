@@ -32,7 +32,7 @@ COPY ollamate ollamate
 
 RUN pip install --no-cache-dir --requirement requirements.txt \
     && chmod +x /usr/local/bin/entrypoint.sh \
-    && python manage.py collectstatic --noinput --ignore=*.scss \
+    # && python manage.py collectstatic --noinput --ignore=*.scss \
     && apk del .build-deps
 
 EXPOSE 8000

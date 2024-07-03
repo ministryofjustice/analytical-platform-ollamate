@@ -28,11 +28,11 @@ if os.path.isfile(env_file):
     print(f"Loading environment variables from {env_file}")
     environ.Env.read_env(env_file)
 else:
-    print(f"{env_file} not found")
-    print("CLIENT_ID:", env("CLIENT_ID"))
-    print("CLIENT_SECRET:", env("CLIENT_SECRET"))
-    print("TENANT_ID:", env("AZURE_TENANT_ID"))
-    print("REDIRECT_URI:", env("REDIRECT_URI"))
+    # print(f"{env_file} not found")
+    # print("CLIENT_ID:", env("CLIENT_ID"))
+    # print("CLIENT_SECRET:", env("CLIENT_SECRET"))
+    # print("TENANT_ID:", env("AZURE_TENANT_ID"))
+    # print("REDIRECT_URI:", env("REDIRECT_URI"))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
