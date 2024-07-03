@@ -6,6 +6,12 @@ npm install --global npm@latest
 # Start Postgres
 docker compose --file contrib/docker-compose-postgres.yml up --detach
 
+# Start Ollama Container
+docker compose --file contrib/docker-compose-ollama.yml up --detach
+
+# Start Ollama Model
+docker exec -it contrib-ollama-1 ollama run orca-mini
+
 # Upgrade Pip
 pip install --break-system-package --upgrade pip
 

@@ -1,0 +1,29 @@
+---
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama
+    ports:
+      - 11434:11434
+    # command: >
+    #   echo "Starting Ollama server..."
+    #   ollama serve &
+    #   ollama run llama3
+
+
+    #   echo "Waiting for Ollama server to be active..."
+    #   while [ "$(ollama list | grep 'NAME')" == "" ]; do
+    #     sleep 1
+    #   done
+
+    # command: "ollama pull llama3"
+    # volumes:
+    #   - ./data:/app/data
+    # environment:
+    #   - ENV_VARIABLE=value
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:11434/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3

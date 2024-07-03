@@ -23,12 +23,17 @@ def call_ollama(request):
 
         url = "http://localhost:11434/api/chat"
         headers = {"Content-Type": "application/json"}
-        data = {"model": "llama3", "messages": conversation_history, "stream": False}
+        data = {
+            "model": "orca-mini",
+            "messages": conversation_history,
+            "stream": False,
+        }  # The model is hardcoded here, this will be parameterised in future
 
         logging.debug("Sending data to Ollama API: %s", json.dumps(data, indent=2))
 
         try:
             response = requests.post(url, json=data, headers=headers)
+            logging.debug("HTTP status code: %s", response.status_code)
             response.raise_for_status()
             response_data = response.json()
             logging.debug("Response data: %s", json.dumps(response_data, indent=2))
