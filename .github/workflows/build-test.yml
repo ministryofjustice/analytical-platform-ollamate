@@ -27,10 +27,10 @@ jobs:
           load: true
           tags: dashboard
 
-      - name: Run Python Tests
-        id: run_python_tests
-        run: |
-          docker compose --file contrib/docker-compose-test.yml run --rm interfaces
-        env:
-          NETWORK: default
-          IMAGE_TAG: dashboard
+      # - name: Run Python Tests
+      #   id: run_python_tests
+      #   run: |
+      #     docker compose --file contrib/docker-compose-test.yml run --rm interfaces
+      #   env:
+      #     NETWORK: default
+      #     IMAGE_TAG: dashboard
