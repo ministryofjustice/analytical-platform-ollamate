@@ -28,6 +28,7 @@ if os.path.isfile(env_file):
     print(f"Loading environment variables from {env_file}")
     environ.Env.read_env(env_file)
 else:
+    print("Fix environment variables.")
     # print(f"{env_file} not found")
     # print("CLIENT_ID:", env("CLIENT_ID"))
     # print("CLIENT_SECRET:", env("CLIENT_SECRET"))
@@ -41,7 +42,7 @@ else:
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(y%c-1p0lnlrxg!$3w)ptcyp=wzer(biav_-%_fehgn1oatx8p"
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
