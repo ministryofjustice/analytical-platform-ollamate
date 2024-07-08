@@ -10,7 +10,7 @@ docker compose --file contrib/docker-compose-postgres.yml up --detach
 docker compose --file contrib/docker-compose-ollama.yml up --detach
 
 # Start Ollama Model
-docker exec -it contrib-ollama-1 ollama run orca-mini
+docker exec -it contrib-ollama-1 ollama run orca-mini &
 
 # Upgrade Pip
 pip install --break-system-package --upgrade pip

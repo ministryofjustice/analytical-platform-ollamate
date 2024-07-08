@@ -11,7 +11,7 @@ from azure_auth.decorators import azure_auth_required
 logging.basicConfig(level=logging.DEBUG)
 
 
-@azure_auth_required
+# @azure_auth_required
 def call_ollama(request):
     if request.method == "POST":
         user_input = request.POST.get("userInput", "")

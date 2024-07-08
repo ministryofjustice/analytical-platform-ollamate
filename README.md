@@ -11,7 +11,21 @@ This repository includes a Django application which presents a simple frontend t
 
 The name 'Ollamate' is derived from Ollama and will be changed if/when this application evolves.
 
-## Getting Started
-
 > [!NOTE]
 > 🚧 WIP 🚧
+
+
+## Running Locally
+
+Ollamate is run in a Development Container via Docker. The Development Container VSCode [extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) is recommended. Additionally ensure [Docker Desktop](https://www.docker.com/products/docker-desktop/) is running.
+
+For more information on Dev Containers, see the [Analytical Platform docs.](https://technical-documentation.data-platform.service.justice.gov.uk/documentation/platform/infrastructure/developing.html#developing-the-data-platform)
+
+
+### Building the Development Container
+Open this repository in Visual Studio Code. Open the Command Palette `Command + Shift + p`, search for and select ```> Dev Containers: Reopen in container```.
+
+The Development Container utilises Docker in Docker to create two containers - `ollama` and `postgresql`. This allows for easy setup when working on Ollamate locally.
+
+### Environment Variables
+There is an example `.env.example` file. Paste the contents into a new file called ```.env``` in the root of the project.

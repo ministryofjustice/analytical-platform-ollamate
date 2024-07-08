@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "streamingapp",
-    "azure_auth",
+    # "azure_auth"
 ]
 
 MIDDLEWARE = [
