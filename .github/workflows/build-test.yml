@@ -25,7 +25,7 @@ jobs:
         with:
           push: false
           load: true
-          tags: dashboard
+          tags: ollamate
 
       # - name: Run Python Tests
       #   id: run_python_tests
