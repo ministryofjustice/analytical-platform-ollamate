@@ -1,10 +1,9 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Ollamate 🦙🍵</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
         html, body {
@@ -48,9 +47,9 @@
         <p class="mb-4 text-center">Logged in as: <strong>{{ user.username }}</strong></p>
         <p class="mb-4">Enter text below to interact with Ollamate:</p>
         <div id="conversation-log" class="bg-white p-4 rounded shadow-lg hidden text-base"></div>
-        <form id="ollamaForm" class="mt-4">
+        <form id="ollama-form" class="mt-4">
             <div class="flex items-center">
-                <textarea id="userInput" name="userInput" required class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none"></textarea>
+                <textarea id="user-input" name="userInput" required class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none"></textarea>
                 <button type="submit" class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded ml-2">Send</button>
             </div>
         </form>
@@ -62,20 +61,22 @@
         </div>
     </footer>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
     <script>
         $(document).ready(function() {
             var conversationHistory = [];
 
-            $('#userInput').on('input', function() {
+            $('#user-input').on('input', function() {
                 this.style.height = 'auto';
                 this.style.height = (this.scrollHeight) + 'px';
             });
 
-            $('#ollamaForm').on('submit', function(event) {
+            $('#ollama-form').on('submit', function(event) {
                 event.preventDefault();
-                var userInput = $('#userInput').val();
-                $('#userInput').val('');
-                $('#userInput').css('height', 'auto');
+                var userInput = $('#user-input').val();
+                $('#user-input').val('');
+                $('#user-input').css('height', 'auto');
 
                 conversationHistory.push({"role": "user", "content": userInput});
 

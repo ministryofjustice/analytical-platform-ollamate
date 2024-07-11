@@ -5,7 +5,8 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 import requests
-from azure_auth.decorators import azure_auth_required
+
+# from azure_auth.decorators import azure_auth_required
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -24,7 +25,7 @@ def call_ollama(request):
         url = "http://localhost:11434/api/chat"
         headers = {"Content-Type": "application/json"}
         data = {
-            "model": "orca-mini",
+            "model": "llama3",
             "messages": conversation_history,
             "stream": False,
         }  # The model is hardcoded here, this will be parameterised in future
