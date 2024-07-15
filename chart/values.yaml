@@ -31,19 +31,3 @@ resources:
   limits:
     cpu: 2
     memory: "7Gi"
-
-github:
-  organisation:
-  repository:
-  token:
-  runner:
-    labels:
-
-ephemeral:
-  enabled: false
-  karpenter:
-    enabled: false
-    nodePool: "general-on-demand"
-  keda:
-    maxReplicaCount: 5
-    pollingInterval: 30
