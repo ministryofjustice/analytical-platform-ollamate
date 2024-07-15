@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   pullPolicy: IfNotPresent
   repository: ghcr.io/ministryofjustice/analytical-platform-ollamate
-  tag: 0.0.1
+  tag: ""
 
 imagePullSecrets: []
 
