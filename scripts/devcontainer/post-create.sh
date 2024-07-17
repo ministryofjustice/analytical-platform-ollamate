@@ -15,9 +15,9 @@ pip install --break-system-package --upgrade pip
 # Install dependencies
 pip install --break-system-package --requirement requirements.dev.txt
 
-# install npm dependencies and static assets
-# npm install
-# make build-static
+# Install npm dependencies and static assets
+npm install
+make build-static
 
 # Run migrations
 python manage.py migrate

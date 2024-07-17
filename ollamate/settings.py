@@ -28,12 +28,13 @@ if os.path.isfile(env_file):
     print(f"Loading environment variables from {env_file}")
     environ.Env.read_env(env_file)
 else:
-    print("Fix environment variables.")
+    print("...")
+    # print("Fix environment variables.")
     # print(f"{env_file} not found")
-    # print("CLIENT_ID:", env("CLIENT_ID"))
-    # print("CLIENT_SECRET:", env("CLIENT_SECRET"))
-    # print("TENANT_ID:", env("AZURE_TENANT_ID"))
-    # print("REDIRECT_URI:", env("REDIRECT_URI"))
+    # print("CLIENT_ID:", os.environ.get("CLIENT_ID"))
+    # print("CLIENT_SECRET:", os.environ.get("CLIENT_SECRET"))
+    # print("TENANT_ID:", os.environ.get("AZURE_TENANT_ID"))
+    # print("REDIRECT_URI:", os.environ.get("REDIRECT_URI"))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,7 +43,7 @@ else:
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -60,7 +61,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "streamingapp",
+    "ollamate",
+    "streamingapp"
     # "azure_auth"
 ]
 
@@ -79,7 +81,7 @@ ROOT_URLCONF = "ollamate.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -153,6 +155,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -162,12 +167,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Azure authentication settings
 
 AZURE_AUTH = {
-    "CLIENT_ID": env("CLIENT_ID"),
-    "CLIENT_SECRET": env("CLIENT_SECRET"),
-    "REDIRECT_URI": env("REDIRECT_URI"),
+    "CLIENT_ID": os.environ.get("CLIENT_ID"),
+    "CLIENT_SECRET": os.environ.get("CLIENT_SECRET"),
+    "REDIRECT_URI": os.environ.get("REDIRECT_URI"),
     "SCOPES": ["User.Read"],
     "AUTHORITY": "https://login.microsoftonline.com/{}".format(
-        env("AZURE_TENANT_ID")
+        os.environ.get("AZURE_TENANT_ID")
     ),  # Or https://login.microsoftonline.com/common if multi-tenant
     #     # "LOGOUT_URI": "https://<domain>/logout",    # Optional
     #     # "PUBLIC_URLS": ["<public:view_name>",],  # Optional, public views accessible by non-authenticated users
