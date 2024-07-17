@@ -1,0 +1,67 @@
+<div id="messages" class="moj-messages-container" style="margin-top: 20px;">
+  <div class="moj-message-list">
+    <!-- <div class="moj-message-item moj-message-item--sent">
+      <div class="moj-message-item__text moj-message-item__text--sent">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+    </div>
+    <div class="moj-message-item moj-message-item--received">
+      <div class="moj-message-item__text moj-message-item__text--received">Nullam vestibulum lorem vulputate velit euismod luctus.</div>
+    </div> -->
+  </div>
+</div>
+
+<div class="govuk-form-group" style="width: 50%; margin: 10px auto 0 auto;">
+  <form id="ollama-form">
+    <textarea class="govuk-textarea" id="user-input" name="user-input" rows="2" placeholder="Message Ollamate here" aria-describedby="more-detail-hint"></textarea>
+    <div style="float: right;">
+      <button type="submit" class="govuk-button" data-module="govuk-button">
+        Send
+      </button>
+    </div>
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var conversationHistory = [];
+
+    $('#ollama-form').on('submit', function(event) {
+      event.preventDefault();
+      var userInput = $('#user-input').val();
+      $('#user-input').val('');
+
+      conversationHistory.push({"role": "user", "content": userInput});
+
+      var newMessage = '<div class="moj-message-item moj-message-item--sent"><div class="moj-message-item__text moj-message-item__text--sent">' + userInput + '</div></div>';
+      $('#messages .moj-message-list').append(newMessage);
+
+      $.ajax({
+        url: "{% url 'call_ollama' %}",
+        type: "POST",
+        data: {
+          userInput: JSON.stringify(conversationHistory),
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function(response) {
+          var ollamaResponse = response.response;
+
+          conversationHistory.push({"role": "assistant", "content": ollamaResponse});
+
+          var newResponse = '<div class="moj-message-item moj-message-item--received"><div class="moj-message-item__text moj-message-item__text--received">' + ollamaResponse + '</div></div>';
+          $('#messages .moj-message-list').append(newResponse);
+        },
+        error: function(xhr, status, error) {
+          var errorMessage = '<div class="moj-message-item moj-message-item--received"><div class="moj-message-item__text moj-message-item__text--received">Error: ' + xhr.responseText + '</div></div>';
+          $('#messages .moj-message-list').append(errorMessage);
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .moj-messages-container {
+      width: 50%;
+      margin: 0 auto;
+  }
+</style>
