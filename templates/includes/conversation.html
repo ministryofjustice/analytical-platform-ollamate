@@ -6,7 +6,7 @@
 
 <div class="govuk-form-group" style="width: 62%; margin: 10px auto 0 auto;">
   <form id="ollama-form">
-    <textarea class="govuk-textarea" id="user-input" name="user-input" rows="2" placeholder="Message Ollamate here" aria-describedby="more-detail-hint"></textarea>
+    <textarea class="govuk-textarea" id="user-input" name="user-input" rows="2" placeholder="Message Ollamate here" aria-describedby="more-detail-hint" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
     <div style="float: right;">
       <button type="submit" class="govuk-button" data-module="govuk-button">
         Send
