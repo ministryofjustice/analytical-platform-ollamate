@@ -1,15 +1,10 @@
 <div id="messages" class="moj-messages-container" style="margin-top: 20px;">
   <div class="moj-message-list">
-    <!-- <div class="moj-message-item moj-message-item--sent">
-      <div class="moj-message-item__text moj-message-item__text--sent">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-    </div>
-    <div class="moj-message-item moj-message-item--received">
-      <div class="moj-message-item__text moj-message-item__text--received">Nullam vestibulum lorem vulputate velit euismod luctus.</div>
-    </div> -->
+    <div class="moj-message-item__text moj-message-item__text--received"></div>
   </div>
 </div>
 
-<div class="govuk-form-group" style="width: 50%; margin: 10px auto 0 auto;">
+<div class="govuk-form-group" style="width: 62%; margin: 10px auto 0 auto;">
   <form id="ollama-form">
     <textarea class="govuk-textarea" id="user-input" name="user-input" rows="2" placeholder="Message Ollamate here" aria-describedby="more-detail-hint"></textarea>
     <div style="float: right;">
@@ -20,9 +15,13 @@
   </form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
+
 <script>
   $(document).ready(function() {
+    var converter = new showdown.Converter(); // Create a new Showdown converter
     var conversationHistory = [];
 
     $('#ollama-form').on('submit', function(event) {
@@ -30,10 +29,23 @@
       var userInput = $('#user-input').val();
       $('#user-input').val('');
 
-      conversationHistory.push({"role": "user", "content": userInput});
+      var currentTime = new Date().toLocaleTimeString(); // Get the current time
 
-      var newMessage = '<div class="moj-message-item moj-message-item--sent"><div class="moj-message-item__text moj-message-item__text--sent">' + userInput + '</div></div>';
+      conversationHistory.push({"role": "user", "content": userInput, "time": currentTime});
+
+      var newMessage = '<div class="moj-message-item moj-message-item--sent"><div class="moj-message-item__text moj-message-item__text--sent">' + userInput + '</div><div class="moj-message-item__meta"><span class="moj-message-item__meta--sender">You</span> at <time class="moj-message-item__meta--timestamp" datetime="' + currentTime + '">' + currentTime + '</time></div></div>';
       $('#messages .moj-message-list').append(newMessage);
+
+      // Create a temporary message with a single dot
+      var loadingMessage = '<div id="loading" class="moj-message-item moj-message-item--received"><div class="moj-message-item__text moj-message-item__text--received">.</div></div>';
+      $('#messages .moj-message-list').append(loadingMessage);
+
+      // Start the loading animation
+      var dots = '.';
+      var loadingAnimation = setInterval(function() {
+        dots = (dots.length < 3) ? (dots + '.') : '.';
+        $('#loading .moj-message-item__text').text(dots);
+      }, 1000);
 
       $.ajax({
         url: "{% url 'call_ollama' %}",
@@ -43,14 +55,29 @@
           csrfmiddlewaretoken: '{{ csrf_token }}'
         },
         success: function(response) {
+          // Stop the loading animation and remove the loading message
+          clearInterval(loadingAnimation);
+          $('#loading').remove();
+
           var ollamaResponse = response.response;
+          var currentTime = new Date().toLocaleTimeString(); // Get the current time
 
-          conversationHistory.push({"role": "assistant", "content": ollamaResponse});
+          conversationHistory.push({"role": "assistant", "content": ollamaResponse, "time": currentTime});
 
-          var newResponse = '<div class="moj-message-item moj-message-item--received"><div class="moj-message-item__text moj-message-item__text--received">' + ollamaResponse + '</div></div>';
+          var formattedResponse = converter.makeHtml(ollamaResponse); // Use Showdown to convert Markdown to HTML
+
+          var newResponse = '<div class="moj-message-item moj-message-item--received"><div class="moj-message-item__text moj-message-item__text--received">' + formattedResponse + '</div><div class="moj-message-item__meta"><span class="moj-message-item__meta--sender">Ollama</span> at <time class="moj-message-item__meta--timestamp" datetime="' + currentTime + '">' + currentTime + '</time></div></div>';
           $('#messages .moj-message-list').append(newResponse);
+
+          $('pre code').each(function(i, block) {
+            hljs.highlightBlock(block);
+          });
         },
         error: function(xhr, status, error) {
+          // Stop the loading animation and remove the loading message
+          clearInterval(loadingAnimation);
+          $('#loading').remove();
+
           var errorMessage = '<div class="moj-message-item moj-message-item--received"><div class="moj-message-item__text moj-message-item__text--received">Error: ' + xhr.responseText + '</div></div>';
           $('#messages .moj-message-list').append(errorMessage);
         }
@@ -59,9 +86,16 @@
   });
 </script>
 
+
 <style>
   .moj-messages-container {
-      width: 50%;
+      width: 62%;
       margin: 0 auto;
+      overflow: hidden;
+  }
+  .moj-message-item__text {
+      padding: 10px; /* Adjust padding to ensure text does not touch the edges */
+      overflow: auto; /* Allows scrolling within the element if content overflows */
+      word-wrap: break-word; /* Ensures long words do not cause horizontal scrolling */
   }
 </style>
