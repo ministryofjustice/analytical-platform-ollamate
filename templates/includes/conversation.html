@@ -15,9 +15,9 @@
   </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js" integrity="sha384-GP2+CwBlakZSDJUr+E4JvbxpM75i1i8+RKkieQxzuyDZLG+5105E1OfHIjzcXyWH" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js" integrity="sha384-GdEWAbCjn+ghjX0gLx7/N1hyTVmPAjdC2OvoAA0RyNcAOhqwtT8qnbCxWle2+uJX" crossorigin="anonymous"></script>
 
 <script>
   $(document).ready(function() {
@@ -39,7 +39,8 @@
 
       conversationHistory.push({"role": "user", "content": userInput, "time": currentTime});
 
-      var newMessage = '<div class="moj-message-item moj-message-item--sent"><div class="moj-message-item__text moj-message-item__text--sent">' + userInput + '</div><div class="moj-message-item__meta"><span class="moj-message-item__meta--sender">You</span> at <time class="moj-message-item__meta--timestamp" datetime="' + currentTime + '">' + currentTime + '</time></div></div>';
+      var newMessage = $('<div class="moj-message-item moj-message-item--sent"><div class="moj-message-item__text moj-message-item__text--sent"></div><div class="moj-message-item__meta"><span class="moj-message-item__meta--sender">You</span> at <time class="moj-message-item__meta--timestamp" datetime="' + currentTime + '">' + currentTime + '</time></div></div>');
+      newMessage.find('.moj-message-item__text--sent').text(userInput);
       $('#messages .moj-message-list').append(newMessage);
 
       // Create a temporary message with a single dot
