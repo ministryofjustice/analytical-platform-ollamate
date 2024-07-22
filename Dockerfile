@@ -1,11 +1,11 @@
-# FROM public.ecr.aws/docker/library/node:20.11.1 AS build-node
+FROM public.ecr.aws/docker/library/node:20.11.1 AS build-node
 
-# WORKDIR /
-# COPY package.json package-lock.json ./
-# COPY assets/scss/app.scss ./assets/scss/app.scss
+WORKDIR /
+COPY package.json package-lock.json ./
+COPY assets/scss/app.scss ./assets/scss/app.scss
 
-# RUN npm install \
-#     && npm run css
+RUN npm install \
+    && npm run css
 
 FROM public.ecr.aws/docker/library/python:3.12-alpine3.19 AS base
 
@@ -21,13 +21,14 @@ RUN mkdir --parents static/assets/fonts \
     && mkdir --parents static/assets/images \
     && mkdir --parents static/assets/js
 
-# COPY --from=build-node static/app.css static/app.css
-# COPY --from=build-node node_modules/govuk-frontend/dist/govuk/assets/fonts/. static/assets/fonts
-# COPY --from=build-node node_modules/govuk-frontend/dist/govuk/assets/images/. static/assets/images
-# COPY --from=build-node node_modules/govuk-frontend/dist/govuk/all.bundle.js static/assets/js/govuk.js
+COPY --from=build-node static/app.css static/app.css
+COPY --from=build-node node_modules/govuk-frontend/dist/govuk/assets/fonts/. static/assets/fonts
+COPY --from=build-node node_modules/govuk-frontend/dist/govuk/assets/images/. static/assets/images
+COPY --from=build-node node_modules/govuk-frontend/dist/govuk/all.bundle.js static/assets/js/govuk.js
 COPY scripts/container/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY requirements.txt manage.py ./
 COPY ollamate ollamate
+COPY streamingapp streamingapp
 # COPY tests tests
 
 RUN pip install --no-cache-dir --requirement requirements.txt \

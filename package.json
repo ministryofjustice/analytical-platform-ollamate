@@ -1,5 +1,22 @@
 {
   "name": "analytical-platform-ollamate",
   "version": "1.0.0",
-  "description": "Analytical Platform Ollamate"
+  "description": "Analytical Platform Ollamate",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "css": "sass --load-path=./ --style=compressed assets/scss/app.scss:static/app.css"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "sass": "1.77.6"
+  },
+  "dependencies": {
+    "@ministryofjustice/frontend": "2.1.3",
+    "govuk-frontend": "5.4.0",
+    "jquery": "3.7.1",
+    "nunjucks": "3.2.4"
+  }
 }
