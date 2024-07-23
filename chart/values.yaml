@@ -31,3 +31,12 @@ resources:
   limits:
     cpu: 2
     memory: "4Gi"
+
+ephemeral:
+  enabled: false
+  karpenter:
+    enabled: false
+    nodePool: "gpu-on-demand"
+  keda:
+    maxReplicaCount: 2
+    pollingInterval: 30

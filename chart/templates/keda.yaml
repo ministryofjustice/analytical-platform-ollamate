@@ -1,1 +1,31 @@
-# TODO:  https://keda.sh/docs/2.14/scalers/cron/ + if statement from runners
+{{- if .Values.ephemeral.enabled }}
+---
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: {{ .Release.Name }}-github-trigger-auth
+spec:
+  secretTargetRef:
+    - parameter: personalAccessToken
+      name: {{ .Release.Name }}-github-token
+      key: token
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "ollamate.fullname" . }}
+  labels:
+    {{- include "ollamate.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    name:
+  minReplicaCount: 0
+  cooldownPeriod: 300
+  triggers:
+  - type: cron
+    metadata:
+      timezone: Universal
+      start: 0 7 * * *
+      end: 30 18 * * *
+      desiredReplicas: "1"
+{{- end }}
