@@ -28,30 +28,7 @@ spec:
       serviceAccountName: {{ include "analytical-platform-ollamate.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      initContainers:
-        - name: init-db
-          securityContext:
-            {{- toYaml .Values.app.securityContext | nindent 12 }}
-          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
-          {{- with .Values.app.environment }}
-          env:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-            - name: MODE
-              value: "migrate"
-        - name: init-nginx
-          securityContext:
-            {{- toYaml .Values.app.securityContext | nindent 12 }}
-          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
-          volumeMounts:
-            - mountPath: /staticfiles
-              name: staticfiles
-          command: ["/usr/local/bin/init-nginx.sh"]
-        # - name: ollama
       containers:
-        # - name: ollama
         - name: reverse-proxy
           securityContext:
             {{- toYaml .Values.reverseProxy.securityContext | nindent 12 }}
@@ -74,29 +51,10 @@ spec:
             periodSeconds: {{ .Values.reverseProxy.readinessProbe.periodSeconds }}
           resources:
             {{- toYaml .Values.reverseProxy.resources | nindent 12 }}
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.app.securityContext | nindent 12 }}
-          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
-          {{- with .Values.app.environment }}
-          env:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          ports:
-            - name: app
-              containerPort: {{ .Values.app.port }}
-              protocol: TCP
-          livenessProbe:
-            {{- toYaml .Values.app.livenessProbe | nindent 12 }}
-          readinessProbe:
-            {{- toYaml .Values.app.readinessProbe | nindent 12 }}
-          resources:
-            {{- toYaml .Values.app.resources | nindent 12 }}
       volumes:
         - name: nginxconfig
           configMap:
-            name: {{ include "analytical-platform-ui.fullname" . }}-nginx-config
+            name: {{ include "analytical-platform-ollamate.fullname" . }}-nginx-config
         - name: staticfiles
           emptyDir: {}
       {{- with .Values.nodeSelector }}
@@ -111,17 +69,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - matchExpressions:
-              - key: compute.analytical-platform.service.justice.gov.uk/karpenter-node-pool
-                operator: In
-                values:
-                  - {{ .Values.ephemeral.karpenter.nodePool }}
-  tolerations:
-    - key: compute.analytical-platform.service.justice.gov.uk/karpenter-node-pool
-      operator: "Equal"
-      value: {{ .Values.ephemeral.karpenter.nodePool }}
-      effect: "NoSchedule"

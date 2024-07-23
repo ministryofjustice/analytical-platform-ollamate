@@ -14,29 +14,106 @@ imagePullSecrets: []
 serviceAccount:
   create: true
   automount: true
-  name: ""
+  name: "ollamate"
   annotations: {}
 
 podAnnotations: {}
 podLabels: {}
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
 
-securityContext:
-  runAsNonRoot: true
-  runAsUser: 10000
+service:
+  type: ClusterIP
+  port: 80
 
-resources:
-  requests:
-    cpu: 1
-    memory: "2Gi"
-  limits:
-    cpu: 2
-    memory: "4Gi"
+ingress:
+  enabled: true
+  className: "default"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  hosts:
+    - host: ollamate.compute.development.analytical-platform.service.justice.gov.uk
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: ollamate-tls
+      hosts:
+        - ollamate.compute.development.analytical-platform.service.justice.gov.uk
+
+app:
+  image:
+    repository: ghcr.io/ministryofjustice/analytical-platform-ollamate
+    pullPolicy: IfNotPresent
+    tag: ""
+  environment:
+    - name: APP_ENVIRONMENT
+      valueFrom:
+        secretKeyRef:
+          name: ollamate-app-secrets
+          key: environment
+  port: 8000
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    runAsNonRoot: true
+    runAsUser: 1000
+
+reverseProxy:
+  image:
+    repository: "docker.io/nginxinc/nginx-unprivileged"
+    tag: "1.27.0-alpine3.19"
+  port: 8080
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    runAsNonRoot: true
+    runAsUser: 101
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: compute.analytical-platform.service.justice.gov.uk/karpenter-node-pool
+            operator: In
+            values:
+              - gpu-on-demand
+
+tolerations:
+  - key: compute.analytical-platform.service.justice.gov.uk/karpenter-node-pool
+    operator: "Equal"
+    value: gpu-on-demand
+    effect: "NoSchedule"
 
 ephemeral:
-  enabled: false
-  karpenter:
-    enabled: false
-    nodePool: "gpu-on-demand"
-  keda:
-    maxReplicaCount: 2
-    pollingInterval: 30
+  enabled: true
+  cron:
+    timezone: Europe/London
+    start: "0 7 * * *"
+    end: "30 18 * * *"
+    desiredReplicas: 1

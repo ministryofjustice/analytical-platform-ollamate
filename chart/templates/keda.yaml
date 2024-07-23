@@ -1,31 +1,21 @@
 {{- if .Values.ephemeral.enabled }}
 ---
 apiVersion: keda.sh/v1alpha1
-kind: TriggerAuthentication
-metadata:
-  name: {{ .Release.Name }}-github-trigger-auth
-spec:
-  secretTargetRef:
-    - parameter: personalAccessToken
-      name: {{ .Release.Name }}-github-token
-      key: token
----
-apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: {{ include "ollamate.fullname" . }}
+  name: {{ include "analytical-platform-ollamate.fullname" . }}
   labels:
-    {{- include "ollamate.labels" . | nindent 4 }}
+    {{- include "analytical-platform-ollamate.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
-    name:
+    name: {{ include "analytical-platform-ollamate.fullname" . }}
   minReplicaCount: 0
   cooldownPeriod: 300
   triggers:
   - type: cron
     metadata:
-      timezone: Universal
-      start: 0 7 * * *
-      end: 30 18 * * *
-      desiredReplicas: "1"
+      timezone: {{ .Values.ephemeral.cron.timezone }}
+      start: {{ .Values.ephemeral.cron.start }}
+      end: {{ .Values.ephemeral.cron.end }}
+      desiredReplicas: {{ .Values.ephemeral.cron.desiredReplicas | quote }}
 {{- end }}
