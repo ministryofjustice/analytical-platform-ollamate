@@ -37,4 +37,4 @@ jobs:
           docker compose --file contrib/docker-compose-test.yml run --rm interfaces
         env:
           NETWORK: default
-          IMAGE_TAG: dashboard
+          IMAGE_TAG: ollamate
