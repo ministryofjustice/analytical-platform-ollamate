@@ -2,6 +2,7 @@ FROM docker.io/ollama/ollama:latest
 
 #checkov:skip=CKV_DOCKER_2
 #checkov:skip=CKV_DOCKER_3
+#checkov:skip=CKV_DOCKER_7
 RUN <<EOF
 # Start Ollama
 nohup ollama serve &

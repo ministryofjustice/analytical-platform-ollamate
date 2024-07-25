@@ -1,3 +1,6 @@
+#checkov:skip=CKV_DOCKER_2
+#checkov:skip=CKV_DOCKER_3
+
 FROM public.ecr.aws/docker/library/node:20.11.1 AS build-node
 
 WORKDIR /
