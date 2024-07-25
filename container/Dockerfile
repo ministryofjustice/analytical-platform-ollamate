@@ -29,15 +29,16 @@ COPY scripts/container/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY requirements.txt manage.py ./
 COPY ollamate ollamate
 COPY streamingapp streamingapp
-# COPY tests tests
+COPY tests tests
 
 RUN pip install --no-cache-dir --requirement requirements.txt \
     && chmod +x /usr/local/bin/entrypoint.sh \
-    # && python manage.py collectstatic --noinput --ignore=*.scss \
+    && python manage.py collectstatic --noinput --ignore=*.scss \
     && apk del .build-deps
 
 EXPOSE 8000
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD ["/usr/local/bin/healthcheck.sh"]
 
 CMD ["run"]
