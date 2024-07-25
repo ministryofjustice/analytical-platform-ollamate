@@ -48,3 +48,16 @@ test: build-container
 
 ct:
 	ct lint --charts chart
+
+
+super-linter:
+	docker run -e RUN_LOCAL=true \
+	-e DEFAULT_BRANCH=main \
+	-e VALIDATE_ALL_CODEBASE=false \
+	-e LINTER_RULES_PATH=/ \
+	-e PYTHON_BLACK_CONFIG_FILE=pyproject.toml \
+	-e PYTHON_FLAKE8_CONFIG_FILE=.flake8 \
+	-e PYTHON_ISORT_CONFIG_FILE=pyproject.toml \
+	-e PYTHON_MYPY_CONFIG_FILE=mypy.ini \
+	-e VALIDATE_KUBERNETES_KUBECONFORM=false \
+	-v $(shell pwd):/tmp/lint github/super-linter

@@ -99,10 +99,10 @@ affinity:
     requiredDuringSchedulingIgnoredDuringExecution:
       nodeSelectorTerms:
         - matchExpressions:
-          - key: compute.analytical-platform.service.justice.gov.uk/karpenter-node-pool
-            operator: In
-            values:
-              - gpu-on-demand
+            - key: compute.analytical-platform.service.justice.gov.uk/karpenter-node-pool
+              operator: In
+              values:
+                - gpu-on-demand
 
 tolerations:
   - key: compute.analytical-platform.service.justice.gov.uk/karpenter-node-pool
