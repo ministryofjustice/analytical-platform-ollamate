@@ -1,6 +1,8 @@
 #!make
 
-IMAGE_NAME = ghcr.io/ministryofjustice/analytical-platform-ollamate:local
+IMAGE_NAME=ghcr.io/ministryofjustice/analytical-platform-ollamate:local
+
+phony: test
 
 build-static:
 	make build-css
@@ -44,7 +46,7 @@ cst: build-container
 test: build-container
 	@echo
 	@echo "> Running Python Tests (In Docker)..."
-	IMAGE_TAG=$(IMAGE_NAME) docker compose --file=contrib/docker-compose-test.yml run --rm interfaces
+	export IMAGE_TAG=$(IMAGE_NAME); env | grep IMAGE; docker compose --file=contrib/docker-compose-test.yml run --rm interfaces
 
 ct:
 	ct lint --charts chart
