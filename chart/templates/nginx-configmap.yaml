@@ -7,7 +7,7 @@ metadata:
     {{- include "analytical-platform-ollamate.labels" . | nindent 4 }}
 data:
   default.conf:
-    upstream ui {
+    upstream ollamate {
         server localhost:{{ .Values.app.port }};
     }
 
@@ -24,11 +24,11 @@ data:
         }
 
         location / {
-            try_files $uri @ui;
+            try_files $uri @ollamate;
         }
 
-        location @ui {
-            proxy_pass http://ui;
+        location @ollamate {
+            proxy_pass http://ollamate;
 
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
