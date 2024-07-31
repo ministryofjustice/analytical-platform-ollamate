@@ -28,7 +28,7 @@ COPY --from=build-node static/app.css static/app.css
 COPY --from=build-node node_modules/govuk-frontend/dist/govuk/assets/fonts/. static/assets/fonts
 COPY --from=build-node node_modules/govuk-frontend/dist/govuk/assets/images/. static/assets/images
 COPY --from=build-node node_modules/govuk-frontend/dist/govuk/all.bundle.js static/assets/js/govuk.js
-COPY scripts/container/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY container/src/usr/local/bin/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY requirements.txt manage.py ./
 COPY ollamate ollamate
 COPY streamingapp streamingapp
