@@ -51,6 +51,9 @@ DEBUG = True
 
 ALLOWED_HOSTS: list = []
 
+# Whitelist values for the HTTP Host header, to prevent certain attacks
+ALLOWED_HOSTS = [host for host in os.environ.get("ALLOWED_HOSTS", "").split() if host]
+
 PROJECT_NAME = "ollamate"
 
 # Application definition
