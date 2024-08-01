@@ -53,6 +53,42 @@ app:
         secretKeyRef:
           name: ollamate-app-secrets
           key: environment
+    - name: SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: ollamate-app-secrets
+          key: secret_key
+    - name: DJANGO_SETTINGS_MODULE
+      value: ollamate.settings
+    - name: ALLOWED_HOSTS
+      value: "*"
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: ollamate-rds
+          key: username
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: ollamate-rds
+          key: password
+    - name: DB_HOST
+      valueFrom:
+        secretKeyRef:
+          name: ollamate-rds
+          key: address
+    - name: DB_PORT
+      valueFrom:
+        secretKeyRef:
+          name: ollamate-rds
+          key: port
+    - name: DB_NAME
+      value: "ollamate"
+    # - name: SENTRY_DSN
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: ollamate-sentry-dsn
+    #       key: dsn
   port: 8000
   resources:
     limits:
