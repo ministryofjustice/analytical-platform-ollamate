@@ -1,0 +1,107 @@
+<div id="messages" class="moj-messages-container" style="margin-top: 20px;">
+  <div class="moj-message-list">
+    <div class="moj-message-item__text moj-message-item__text--received"></div>
+  </div>
+</div>
+
+<div class="govuk-form-group" style="width: 62%; margin: 10px auto 0 auto;">
+  <form id="ollama-form">
+    <textarea class="govuk-textarea" id="user-input" name="user-input" rows="2" placeholder="Message Ollamate here" aria-describedby="more-detail-hint" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" required></textarea>
+    <div style="float: right;">
+      <button type="submit" class="govuk-button" data-module="govuk-button">
+        Send
+      </button>
+    </div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js" integrity="sha384-GP2+CwBlakZSDJUr+E4JvbxpM75i1i8+RKkieQxzuyDZLG+5105E1OfHIjzcXyWH" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js" integrity="sha384-GdEWAbCjn+ghjX0gLx7/N1hyTVmPAjdC2OvoAA0RyNcAOhqwtT8qnbCxWle2+uJX" crossorigin="anonymous"></script>
+
+<script>
+  $(document).ready(function() {
+    var converter = new showdown.Converter(); // Create a new Showdown converter
+    var conversationHistory = [];
+
+    $('#ollama-form').on('submit', function(event) {
+      event.preventDefault();
+      var userInput = $('#user-input').val();
+
+      // Check if user input is empty
+      if (!userInput.trim()) {
+        return; // Stop execution if input is empty
+      }
+
+      $('#user-input').val('');
+
+      var currentTime = new Date().toLocaleTimeString();
+
+      conversationHistory.push({"role": "user", "content": userInput, "time": currentTime});
+
+      var newMessage = $('<div class="moj-message-item moj-message-item--sent"><div class="moj-message-item__text moj-message-item__text--sent"></div><div class="moj-message-item__meta"><span class="moj-message-item__meta--sender">You</span> at <time class="moj-message-item__meta--timestamp" datetime="' + currentTime + '">' + currentTime + '</time></div></div>');
+      newMessage.find('.moj-message-item__text--sent').text(userInput);
+      $('#messages .moj-message-list').append(newMessage);
+
+      // Create a temporary message with a single dot
+      var loadingMessage = '<div id="loading" class="moj-message-item moj-message-item--received"><div class="moj-message-item__text moj-message-item__text--received">.</div></div>';
+      $('#messages .moj-message-list').append(loadingMessage);
+
+      // Start the loading animation
+      var dots = '.';
+      var loadingAnimation = setInterval(function() {
+        dots = (dots.length < 3) ? (dots + '.') : '.';
+        $('#loading .moj-message-item__text').text(dots);
+      }, 1000);
+
+      $.ajax({
+        url: "{% url 'call_ollama' %}",
+        type: "POST",
+        data: {
+          userInput: JSON.stringify(conversationHistory),
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function(response) {
+          // Stop the loading animation and remove the loading message
+          clearInterval(loadingAnimation);
+          $('#loading').remove();
+
+          var ollamaResponse = response.response;
+          var currentTime = new Date().toLocaleTimeString();
+
+          conversationHistory.push({"role": "assistant", "content": ollamaResponse, "time": currentTime});
+
+          var formattedResponse = converter.makeHtml(ollamaResponse); // Use Showdown to convert Markdown to HTML
+
+          var newResponse = '<div class="moj-message-item moj-message-item--received"><div class="moj-message-item__text moj-message-item__text--received">' + formattedResponse + '</div><div class="moj-message-item__meta"><span class="moj-message-item__meta--sender">Ollama</span> at <time class="moj-message-item__meta--timestamp" datetime="' + currentTime + '">' + currentTime + '</time></div></div>';
+          $('#messages .moj-message-list').append(newResponse);
+
+          $('pre code').each(function(i, block) {
+            hljs.highlightBlock(block);
+          });
+        },
+        error: function(xhr, status, error) {
+          // Stop the loading animation and remove the loading message
+          clearInterval(loadingAnimation);
+          $('#loading').remove();
+
+          var errorMessage = '<div class="moj-message-item moj-message-item--received"><div class="moj-message-item__text moj-message-item__text--received">Error: ' + xhr.responseText + '</div></div>';
+          $('#messages .moj-message-list').append(errorMessage);
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .moj-messages-container {
+      width: 62%;
+      margin: 0 auto;
+      overflow: hidden;
+  }
+  .moj-message-item__text {
+      padding: 10px;
+      overflow: auto;
+      word-wrap: break-word;
+  }
+</style>

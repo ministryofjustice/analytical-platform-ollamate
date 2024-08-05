@@ -63,3 +63,6 @@ super-linter:
 	-e PYTHON_MYPY_CONFIG_FILE=mypy.ini \
 	-e VALIDATE_KUBERNETES_KUBECONFORM=false \
 	-v $(shell pwd):/tmp/lint github/super-linter
+
+chat:
+	curl -X POST http://localhost:11434/api/chat -H "Content-Type: application/json" -d "{\"model\": \"llama3\", \"messages\": [{\"role\": \"user\", \"content\": \"why is the sky blue?\"}, {\"role\": \"assistant\", \"content\": \"due to rayleigh scattering.\"}, {\"role\": \"user\", \"content\": \"how is that different than mie scattering?\"}]}"
