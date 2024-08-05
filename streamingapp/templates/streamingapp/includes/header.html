@@ -5,7 +5,7 @@
       <!-- <div class="moj-header__logo" style="display: flex; align-items: center; justify-content: start; gap: 10px;"> -->
       <div class="moj-header__logo">
 
-        {% include "includes/moj_header.svg" %}
+        {% include "streamingapp/includes/moj_header.svg" %}
 
         <a class="moj-header__link moj-header__link--organisation-name" href="{{ header_organisation_url }}">Ministry of Justice</a>
 
@@ -17,7 +17,7 @@
 
           <ul class="moj-header__navigation-list">
             {% for item in header_nav_items %}
-                {% include "includes/nav_item.html" with item=item level="moj-header__navigation-" %}
+                {% include "streamingapp/includes/nav_item.html" with item=item level="moj-header__navigation-" %}
             {% endfor %}
           </ul>
 
@@ -28,4 +28,4 @@
 
 </header>
 
-{% include "includes/navigation.html" %}
+{% include "streamingapp/includes/navigation.html" %}
