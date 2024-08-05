@@ -20,7 +20,7 @@ services:
       DB_PORT: 5432
       DB_USER: ollamate
       DEBUG: "True"
-      DJANGO_SETTINGS_MODULE: "ollamate.settings.test"
+      DJANGO_SETTINGS_MODULE: "ollamate.settings"
       ENV: "dev"
       PYTHONUNBUFFERED: "1"
       SECRET_KEY: "1234567890"

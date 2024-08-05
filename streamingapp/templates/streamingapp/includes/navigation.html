@@ -1,0 +1,20 @@
+<div class="moj-primary-navigation">
+
+    <div class="moj-primary-navigation__container">
+
+      <div class="moj-primary-navigation__nav">
+
+        <nav class="moj-primary-navigation" aria-label="Primary navigation">
+
+          <ul class="moj-primary-navigation__list">
+            {% for item in nav_items %}
+                {% include "streamingapp/includes/nav_item.html" with level="moj-primary-navigation__" %}
+            {% endfor %}
+          </ul>
+
+        </nav>
+
+      </div>
+    </div>
+
+  </div>
