@@ -30,7 +30,7 @@ jobs:
       - name: Super-Linter
         id: super_linter
         # yamllint disable-line rule:line-length
-        uses: super-linter/super-linter/slim@ba3315d7e5da8cee94ef552f3baf1c34f6021345 # v5.7.1
+        uses: super-linter/super-linter/slim@1fa6ba58a88783e9714725cf89ac26d53e80c148 # v6.9.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
