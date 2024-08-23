@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/node:20.11.1 AS build-node
+FROM public.ecr.aws/docker/library/node:22.7.0 AS build-node
 
 WORKDIR /
 COPY package.json package-lock.json ./
