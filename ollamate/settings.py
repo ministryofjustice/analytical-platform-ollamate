@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+
 import os
 
 import environ
@@ -48,7 +49,10 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS: list = ["127.0.0.1"]
+ALLOWED_HOSTS: list = []
+
+# Whitelist values for the HTTP Host header, to prevent certain attacks
+ALLOWED_HOSTS = [host for host in os.environ.get("ALLOWED_HOSTS", "").split() if host]
 
 PROJECT_NAME = "ollamate"
 
@@ -62,7 +66,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "ollamate",
-    "streamingapp"
+    "streamingapp",
     # "azure_auth"
 ]
 

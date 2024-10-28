@@ -1,5 +1,9 @@
 #!make
 
+IMAGE_NAME=ghcr.io/ministryofjustice/analytical-platform-ollamate:local
+
+phony: test
+
 build-static:
 	make build-css
 	make build-js
@@ -25,13 +29,40 @@ db-drop:
 serve:
 	python manage.py runserver
 
-container:
-	docker build -t ollamate .
+build-container:
+	@ARCH=`uname -m`; \
+	case $$ARCH in \
+	aarch64 | arm64) \
+		echo "Building on $$ARCH architecture"; \
+		docker build --platform linux/amd64 --file container/Dockerfile --tag $(IMAGE_NAME) . ;; \
+	*) \
+		echo "Building on $$ARCH architecture"; \
+		docker build --file container/Dockerfile --tag $(IMAGE_NAME) . ;; \
+	esac
 
-test: container
+cst: build-container
+	container-structure-test test --platform linux/amd64 --config container/test/container-structure-test.yml --image $(IMAGE_NAME)
+
+test: build-container
 	@echo
 	@echo "> Running Python Tests (In Docker)..."
-	IMAGE_TAG=ollamate docker compose --file=contrib/docker-compose-test.yml run --rm interfaces
+	export IMAGE_TAG=$(IMAGE_NAME); env | grep IMAGE; docker compose --file=contrib/docker-compose-test.yml run --rm interfaces
 
 ct:
 	ct lint --charts chart
+
+
+super-linter:
+	docker run -e RUN_LOCAL=true \
+	-e DEFAULT_BRANCH=main \
+	-e VALIDATE_ALL_CODEBASE=false \
+	-e LINTER_RULES_PATH=/ \
+	-e PYTHON_BLACK_CONFIG_FILE=pyproject.toml \
+	-e PYTHON_FLAKE8_CONFIG_FILE=.flake8 \
+	-e PYTHON_ISORT_CONFIG_FILE=pyproject.toml \
+	-e PYTHON_MYPY_CONFIG_FILE=mypy.ini \
+	-e VALIDATE_KUBERNETES_KUBECONFORM=false \
+	-v $(shell pwd):/tmp/lint github/super-linter
+
+chat:
+	curl -X POST http://localhost:11434/api/chat -H "Content-Type: application/json" -d "{\"model\": \"llama3\", \"messages\": [{\"role\": \"user\", \"content\": \"why is the sky blue?\"}, {\"role\": \"assistant\", \"content\": \"due to rayleigh scattering.\"}, {\"role\": \"user\", \"content\": \"how is that different than mie scattering?\"}]}"

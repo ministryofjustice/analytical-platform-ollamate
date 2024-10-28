@@ -1,0 +1,21 @@
+{{- if .Values.ephemeral.enabled }}
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "analytical-platform-ollamate.fullname" . }}
+  labels:
+    {{- include "analytical-platform-ollamate.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    name: {{ include "analytical-platform-ollamate.fullname" . }}
+  minReplicaCount: 0
+  cooldownPeriod: 300
+  triggers:
+  - type: cron
+    metadata:
+      timezone: {{ .Values.ephemeral.cron.timezone }}
+      start: {{ .Values.ephemeral.cron.start }}
+      end: {{ .Values.ephemeral.cron.end }}
+      desiredReplicas: {{ .Values.ephemeral.cron.desiredReplicas | quote }}
+{{- end }}
