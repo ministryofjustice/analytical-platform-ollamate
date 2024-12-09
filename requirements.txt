@@ -1,6 +1,6 @@
 django-azure-auth==2.0.0
 django-environ==0.11.2
-govuk-frontend-django==0.9.1
+govuk-frontend-django==0.10.0
 gunicorn==22.0.0
 psycopg==3.2.1
 pytest==8.3.1
